@@ -19,6 +19,7 @@ import cv2
 # are viewing the stream)
 outputFrame = None
 lock = threading.Lock()
+BAG_CONFIDENCE = 0.5
 # initialize a flask object
 app = Flask(__name__)
 # initialize the video stream and allow the camera sensor to
@@ -72,7 +73,7 @@ def detect_motion(frameCount):
 					# iterate over each box
 					for box in result.boxes:
 						# check if confidence is greater than 40 percent
-						if box.conf[0] > 0.4:
+						if box.conf[0] > BAG_CONFIDENCE:
 							# get coordinates
 							[x1, y1, x2, y2] = box.xyxy[0]
 							# convert to int
