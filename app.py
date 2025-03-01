@@ -32,6 +32,11 @@ def index():
 	# return the rendered template
 	return render_template("index.html")
 
+@app.route("/about")
+def about():
+	# returns the about page
+	return render_template("about.html")
+
 def detect_motion(frameCount):
 	# grab global references to the video stream, output frame, and
 	# lock variables
