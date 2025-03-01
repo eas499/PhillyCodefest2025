@@ -2,7 +2,7 @@
 # Credit goes to Adrian Rosebrock
 
 # import the necessary packages
-from bagdetector import BagDetector
+from detectors.bagdetector import BagDetector
 from imutils.video import VideoStream
 from flask import Response
 from flask import Flask
@@ -24,13 +24,18 @@ app = Flask(__name__)
 # initialize the video stream and allow the camera sensor to
 # warmup
 #vs = VideoStream(usePiCamera=1).start()
-vs = VideoStream(src=0).start()
+vs = VideoStream().start()
 time.sleep(2.0)
 
 @app.route("/")
 def index():
 	# return the rendered template
 	return render_template("index.html")
+
+@app.route("/about")
+def about():
+	# returns the about page
+	return render_template("about.html")
 
 def detect_motion(frameCount):
 	# grab global references to the video stream, output frame, and
@@ -46,8 +51,6 @@ def detect_motion(frameCount):
 		# convert the frame to grayscale, and blur it
 		frame = vs.read()
 		frame = imutils.resize(frame, width=400)
-		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-		gray = cv2.GaussianBlur(gray, (7, 7), 0)
 		# grab the current timestamp and draw it on the frame
 		timestamp = datetime.datetime.now()
 		cv2.putText(frame, timestamp.strftime(
@@ -59,25 +62,54 @@ def detect_motion(frameCount):
 		
         # this section is commented out
 
-		# if total > frameCount:
+		if total > frameCount:
 			# detect motion in the image
-			# motion = md.detect(gray)
+			motion = md.detect(frame)
 			# check to see if motion was found in the frame
-			# if motion is not None:
-				# unpack the tuple and draw the box surrounding the
-				# "motion area" on the output frame
-				# (thresh, (minX, minY, maxX, maxY)) = motion
-				# cv2.rectangle(frame, (minX, minY), (maxX, maxY),
-				#	(0, 0, 255), 2)
+			if motion is not None:
+				for result in motion:
+					classes_names = result.names
+					# iterate over each box
+					for box in result.boxes:
+						# check if confidence is greater than 40 percent
+						if box.conf[0] > 0.4:
+							# get coordinates
+							[x1, y1, x2, y2] = box.xyxy[0]
+							# convert to int
+							x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+
+							# get the class
+							cls = int(box.cls[0])
+
+							# get the class name
+							class_name = classes_names[cls]
+
+							# get the respective colour
+							colour = getColours(cls)
+
+							# draw the rectangle
+							cv2.rectangle(frame, (x1, y1), (x2, y2), colour, 2)
+
+							# put the class name and confidence on the image
+							cv2.putText(frame, f'{classes_names[int(box.cls[0])]} {box.conf[0]:.2f}', (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, colour, 2)
 		
 		# update the background model and increment the total number
 		# of frames read thus far
-		md.update(gray)
+		md.update(frame)
 		total += 1
 		# acquire the lock, set the output frame, and release the
 		# lock
 		with lock:
 			outputFrame = frame.copy()
+
+# Function to get class colors
+def getColours(cls_num):
+    base_colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
+    color_index = cls_num % len(base_colors)
+    increments = [(1, -2, 1), (-2, 1, -1), (1, -1, 2)]
+    color = [base_colors[color_index][i] + increments[color_index][i] * 
+    (cls_num // len(base_colors)) % 256 for i in range(3)]
+    return tuple(color)
 			
 def generate():
 	# grab global references to the output frame and lock variables
