@@ -1,3 +1,6 @@
+# Code taken from https://pyimagesearch.com/2019/09/02/opencv-stream-video-to-web-browser-html-page/
+# Credit goes to Adrian Rosebrock
+
 # import the necessary packages
 from detector import Detector
 from imutils.video import VideoStream
