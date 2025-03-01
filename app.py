@@ -24,7 +24,7 @@ app = Flask(__name__)
 # initialize the video stream and allow the camera sensor to
 # warmup
 #vs = VideoStream(usePiCamera=1).start()
-vs = VideoStream(src=0).start()
+vs = VideoStream(src=0)
 time.sleep(2.0)
 
 @app.route("/")
@@ -36,6 +36,13 @@ def index():
 def about():
 	# returns the about page
 	return render_template("about.html")
+
+# For the buttons on the home page
+def start_video():
+	vs.start()
+
+def stop_video():
+	vs.stop()
 
 def detect_motion(frameCount):
 	# grab global references to the video stream, output frame, and
