@@ -2,6 +2,8 @@ import numpy as np
 import imutils
 from ultralytics import YOLO
 import cv2
+import torch
+
 class BagDetector:
 	
 	def __init__(self, accumWeight=0.5):
@@ -10,6 +12,8 @@ class BagDetector:
 		# initialize the background model
 		self.bg = None   
 		self.yolo = YOLO('katy_perry.pt')
+		if torch.cuda.is_available():
+			self.yolo.to('cuda')
 
 	def update(self, image):
 		# if the background model is None, initialize it
