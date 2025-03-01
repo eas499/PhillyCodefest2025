@@ -98,7 +98,7 @@ body {
 /** about **/
 
 .container {
-    width: 40%;
+    width: 50%;
     display: grid;
     justify-self: center;
     margin-bottom: 100px;
@@ -113,8 +113,9 @@ body {
 }
 
 .gallery__img {
-    width: 150%;
-    height: auto;
+    margin: auto;
+    width: auto;
+    height: 250px;
     display: block; 
 }
 
