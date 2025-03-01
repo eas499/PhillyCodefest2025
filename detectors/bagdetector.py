@@ -9,7 +9,7 @@ class BagDetector:
 		self.accumWeight = accumWeight
 		# initialize the background model
 		self.bg = None   
-		self.yolo = YOLO('best.pt')
+		self.yolo = YOLO('katy_perry.pt')
 
 	def update(self, image):
 		# if the background model is None, initialize it
