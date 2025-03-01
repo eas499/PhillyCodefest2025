@@ -1,10 +1,32 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>
-        Placeholder
-    </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeFest 2025</title>
     <link rel="stylesheet" href="static/styles.css">
 </head>
+
 <body>
-    <h1>Gaming</h1>
+    <header>
+        <ul class="navBar">
+            <li><a  class="nav-link active" href="/">B.A.G.S.</a></li>
+            <li><a class="nav-link" href="pages/about.html">About</a></li>        
+        </ul>
+    </header>
+
+
+
+    <div class="videoField">
+        <img width="100%" height="auto" src="{{ url_for('video_feed') }}" class="Video_Field">
+    </div>
+
+
+    <div class="descriptionField">
+        <p>Project Description</p>
+        <p>Basic Artifical Garbage Sorting, also known as B.A.G.S, is a OpenCV and Spaghetti powered website designed to
+            detect plastic bags amongst recyclable materials.
+        </p>
+    </div>
 </body>
+</html>
