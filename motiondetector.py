@@ -4,7 +4,7 @@
 import numpy as np
 import imutils
 import cv2
-class Detector:
+class MotionDetector:
 	
 	def __init__(self, accumWeight=0.5):
 		# store the accumulated weight factor

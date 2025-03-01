@@ -2,7 +2,7 @@
 # Credit goes to Adrian Rosebrock
 
 # import the necessary packages
-from detector import Detector
+from bagdetector import BagDetector
 from imutils.video import VideoStream
 from flask import Response
 from flask import Flask
@@ -38,7 +38,7 @@ def detect_motion(frameCount):
 	global vs, outputFrame, lock
 	# initialize the motion detector and the total number of frames
 	# read thus far
-	md = Detector(accumWeight=0.1)
+	md = BagDetector(accumWeight=0.1)
 	total = 0
 	# loop over frames from the video stream
 	while True:
