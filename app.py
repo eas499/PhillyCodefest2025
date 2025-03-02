@@ -146,7 +146,7 @@ if __name__ == '__main__':
 		help="ephemeral port number of the server (1024 to 65535)")
 	ap.add_argument("-f", "--frame-count", type=int, default=32,
 		help="# of frames used to construct the background model")
-	ap.add_argument("-m", "--model", type=str, default="paty_kerrymk2.pt",
+	ap.add_argument("-m", "--model", type=str, default="paty_kerry_mk2.pt",
 		help="model to use for bag recognition (best: katy_perry.pt, last: paty_kerry.pt)")
 	ap.add_argument("-b", "--backend", type=str, default="cuda",
 		help="backend to use when building the website (current options: cuda, cpu")
