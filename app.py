@@ -9,7 +9,6 @@ from flask import Flask
 from flask import render_template
 import threading
 import argparse
-import datetime
 import imutils
 import time
 import cv2
@@ -19,26 +18,29 @@ import cv2
 # are viewing the stream)
 outputFrame = None
 lock = threading.Lock()
-BAG_CONFIDENCE = 0.5
+BAG_CONFIDENCE = 0.6
 # initialize a flask object
 app = Flask(__name__)
 # initialize the video stream and allow the camera sensor to
 # warmup
-#vs = VideoStream(usePiCamera=1).start()
+# vs = VideoStream(usePiCamera=1).start()
 vs = VideoStream().start()
 time.sleep(2.0)
+
 
 @app.route("/")
 def index():
 	# return the rendered template
 	return render_template("index.html")
 
+
 @app.route("/about")
 def about():
 	# returns the about page
 	return render_template("about.html")
 
-def detect_motion(frameCount, model, backend):
+
+def detect_motion(frame_count, model, backend):
 	# grab global references to the video stream, output frame, and
 	# lock variables
 	global vs, outputFrame, lock
@@ -57,9 +59,9 @@ def detect_motion(frameCount, model, backend):
 		# number to construct a reasonable background model, then
 		# continue to process the frame
 		
-        # this section is commented out
+		# this section is commented out
 
-		if total > frameCount:
+		if total > frame_count:
 			# detect motion in the image
 			motion = md.detect(frame)
 			# check to see if motion was found in the frame
@@ -82,7 +84,7 @@ def detect_motion(frameCount, model, backend):
 							class_name = classes_names[cls]
 
 							# get the respective colour
-							colour = getColours(cls)
+							colour = get_colors(cls)
 
 							# draw the rectangle
 							cv2.rectangle(frame, (x1, y1), (x2, y2), colour, 2)
@@ -99,15 +101,17 @@ def detect_motion(frameCount, model, backend):
 		with lock:
 			outputFrame = frame.copy()
 
+
 # Function to get class colors
-def getColours(cls_num):
-    base_colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
-    color_index = cls_num % len(base_colors)
-    increments = [(1, -2, 1), (-2, 1, -1), (1, -1, 2)]
-    color = [base_colors[color_index][i] + increments[color_index][i] * 
-    (cls_num // len(base_colors)) % 256 for i in range(3)]
-    return tuple(color)
-			
+def get_colors(cls_num):
+	base_colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
+	color_index = cls_num % len(base_colors)
+	increments = [(1, -2, 1), (-2, 1, -1), (1, -1, 2)]
+	color = [base_colors[color_index][i] + increments[color_index][i] *
+	(cls_num // len(base_colors)) % 256 for i in range(3)]
+	return tuple(color)
+
+
 def generate():
 	# grab global references to the output frame and lock variables
 	global outputFrame, lock
@@ -125,15 +129,14 @@ def generate():
 			if not flag:
 				continue
 		# yield the output frame in the byte format
-		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + 
-			bytearray(encodedImage) + b'\r\n')
+		yield b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n'
+
 
 @app.route("/video_feed")
 def video_feed():
 	# return the response generated along with the specific media
 	# type (mime type)
-	return Response(generate(),
-		mimetype = "multipart/x-mixed-replace; boundary=frame")
+	return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
 # check to see if this is the main thread of execution
@@ -160,4 +163,4 @@ if __name__ == '__main__':
 	app.run(host=args["ip"], port=args["port"], debug=True,
 		threaded=True, use_reloader=False)
 # release the video stream pointer
-vs.stop() 
+vs.stop()
