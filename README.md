@@ -8,5 +8,6 @@ Options when building website:
 * -o or --port: Port number of the server (required)
 * -f or --frame_count: # of frames used to construct the background model (default = 32)
 * -m or --model: Model to use. Current options are katy_perry.pt and paty_kerry.pt. (default = katy_perry.pt)
+* -b of --backend: Backend to use. Current options are cuda and cpu. (default is cuda if it is available, otherwise default to cpu)
 
 Example: `python app.py --ip 0.0.0.0 --port 8000 -m paty_kerry.pt`

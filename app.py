@@ -38,13 +38,13 @@ def about():
 	# returns the about page
 	return render_template("about.html")
 
-def detect_motion(frameCount, model):
+def detect_motion(frameCount, model, backend):
 	# grab global references to the video stream, output frame, and
 	# lock variables
 	global vs, outputFrame, lock
 	# initialize the motion detector and the total number of frames
 	# read thus far
-	md = BagDetector(model, accumWeight=0.1)
+	md = BagDetector(model, backend, accumWeight=0.1)
 	total = 0
 	# loop over frames from the video stream
 	while True:
@@ -152,10 +152,12 @@ if __name__ == '__main__':
 		help="# of frames used to construct the background model")
 	ap.add_argument("-m", "--model", type=str, default="katy_perry.pt",
 		help="model to use for bag recognition (best: katy_perry.pt, last: paty_kerry.pt)")
+	ap.add_argument("-b", "--backend", type=str, default="cuda",
+		help="backend to use when building the website (current options: cuda, cpu")
 	args = vars(ap.parse_args())
 	# start a thread that will perform motion detection
 	t = threading.Thread(target=detect_motion, args=(
-		args["frame_count"], args["model"]))
+		args["frame_count"], args["model"], args["backend"]))
 	t.daemon = True
 	t.start()
 	# start the flask app
