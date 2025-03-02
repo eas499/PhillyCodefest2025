@@ -57,8 +57,9 @@ body {
     display: grid;
     flex-direction: column;
     justify-self: center;
+    
+    padding: 10% 5%;
 
-    padding: 100px 100px;
     width: 50%;
     height: 50%;
 
