@@ -6,12 +6,12 @@ import torch
 
 class BagDetector:
 	
-	def __init__(self, accumWeight=0.5):
+	def __init__(self, model, accumWeight=0.5):
 		# store the accumulated weight factor
 		self.accumWeight = accumWeight
 		# initialize the background model
 		self.bg = None   
-		self.yolo = YOLO('katy_perry.pt')
+		self.yolo = YOLO(model)
 		if torch.cuda.is_available():
 			self.yolo.to('cuda')
 
