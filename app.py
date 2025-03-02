@@ -19,6 +19,7 @@ import cv2
 # are viewing the stream)
 outputFrame = None
 lock = threading.Lock()
+BAG_CONFIDENCE = 0.5
 # initialize a flask object
 app = Flask(__name__)
 # initialize the video stream and allow the camera sensor to
@@ -37,13 +38,13 @@ def about():
 	# returns the about page
 	return render_template("about.html")
 
-def detect_motion(frameCount):
+def detect_motion(frameCount, model):
 	# grab global references to the video stream, output frame, and
 	# lock variables
 	global vs, outputFrame, lock
 	# initialize the motion detector and the total number of frames
 	# read thus far
-	md = BagDetector(accumWeight=0.1)
+	md = BagDetector(model, accumWeight=0.1)
 	total = 0
 	# loop over frames from the video stream
 	while True:
@@ -72,7 +73,7 @@ def detect_motion(frameCount):
 					# iterate over each box
 					for box in result.boxes:
 						# check if confidence is greater than 40 percent
-						if box.conf[0] > 0.4:
+						if box.conf[0] > BAG_CONFIDENCE:
 							# get coordinates
 							[x1, y1, x2, y2] = box.xyxy[0]
 							# convert to int
@@ -149,10 +150,12 @@ if __name__ == '__main__':
 		help="ephemeral port number of the server (1024 to 65535)")
 	ap.add_argument("-f", "--frame-count", type=int, default=32,
 		help="# of frames used to construct the background model")
+	ap.add_argument("-m", "--model", type=str, default="katy_perry.pt",
+		help="model to use for bag recognition (best: katy_perry.pt, last: paty_kerry.pt)")
 	args = vars(ap.parse_args())
 	# start a thread that will perform motion detection
 	t = threading.Thread(target=detect_motion, args=(
-		args["frame_count"],))
+		args["frame_count"], args["model"]))
 	t.daemon = True
 	t.start()
 	# start the flask app

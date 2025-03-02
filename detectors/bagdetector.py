@@ -4,12 +4,12 @@ from ultralytics import YOLO
 import cv2
 class BagDetector:
 	
-	def __init__(self, accumWeight=0.5):
+	def __init__(self, model, accumWeight=0.5):
 		# store the accumulated weight factor
 		self.accumWeight = accumWeight
 		# initialize the background model
 		self.bg = None   
-		self.yolo = YOLO('katy_perry.pt')
+		self.yolo = YOLO(model)
 
 	def update(self, image):
 		# if the background model is None, initialize it
