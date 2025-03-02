@@ -48,15 +48,19 @@ body {
     font-weight: bold;
 }
 
+.heading {
+    justify-self: center;
+    padding: 20px;
+}
 
 .videoField {
     display: grid;
     flex-direction: column;
     justify-self: center;
 
-    padding: 280px 200px;
+    padding: 100px 100px;
     width: 50%;
-    height: auto;
+    height: 50%;
 
     color: #000000;
     background: #c0c0c0;
@@ -159,4 +163,11 @@ body {
     grid-column-end: 4;
     grid-row-start: 3;
     grid-row-end: 4;
+}
+
+.gallery__item--7 {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 5;
+    grid-row-end: 6;
 }
